@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SSC CGL 2026 • Official TCS iON CBT Simulator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a365d'/><text x='50' y='65' font-size='50' font-weight='bold' fill='%23f59e0b' text-anchor='middle'>CGL</text></svg>">
+</head>
+<body>
+
+  <!-- Top App Header -->
+  <header class="app-header">
+    <a href="index.html" class="header-brand">
+      <div class="brand-logo">SSC</div>
+      <div>
+        <div class="brand-title">CGL 2026 Master Prep Pro</div>
+        <div class="brand-sub">Official TCS iON CBT Exam Simulator</div>
+      </div>
+    </a>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <select id="mockSelectDropdown" onchange="switchMock(this.value)" style="background:#0f2442; color:white; border:1px solid rgba(255,255,255,0.3); padding:5px 10px; border-radius:6px; font-size:12px; font-weight:700;">
+        <option value="mock_1">Daily Full Mock 1 (100Q)</option>
+        <option value="mock_2">Daily Full Mock 2 (100Q)</option>
+        <option value="mock_3">Daily Full Mock 3 (100Q)</option>
+        <option value="mock_4">Daily Full Mock 4 (100Q)</option>
+        <option value="mock_5">Daily Full Mock 5 (100Q)</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-link">🏠 Dashboard</a>
+    <a href="vault.html" class="nav-link">📚 Revision & Boosters Vault <span class="badge badge-green">51</span></a>
+    <a href="cbt.html" class="nav-link active">📝 CBT Mock Simulator</a>
+    <a href="pyq.html" class="nav-link">📜 10-Year PYQ Vault</a>
+    <a href="diary.html" class="nav-link">📕 3-Bucket Error Diary</a>
+  </nav>
+
+  <main class="main-viewport" style="max-width: 1400px; padding: 12px;">
+    
+    <!-- TCS iON Exam Simulator Container -->
+    <div class="cbt-container">
+      <div class="cbt-exam-strip">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span id="examHeaderTitle" style="font-weight:800; color:#0f172a;">SSC CGL Tier-I Official Mock Examination</span>
+          <span style="font-size:11px; background:#dbeafe; color:#1d4ed8; font-weight:700; padding:2px 8px; border-radius:4px;">+2.0 / -0.50</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="cbt-timer-box" id="timerDisplay">60:00</div>
+          <button class="card-btn" style="padding:4px 8px; font-size:11px; background:#f1f5f9; border:1px solid #cbd5e1;" onclick="toggleLang()">🌐 <span id="langBtnText">English</span></button>
+        </div>
+      </div>
+
+      <!-- Section Tabs -->
+      <div class="cbt-sections-bar">
+        <button class="cbt-sec-tab active" id="secTab_0" onclick="switchSection('General Intelligence & Reasoning')">1. Reasoning (25)</button>
+        <button class="cbt-sec-tab" id="secTab_1" onclick="switchSection('General Awareness')">2. GA (25)</button>
+        <button class="cbt-sec-tab" id="secTab_2" onclick="switchSection('Quantitative Aptitude')">3. Quant (25)</button>
+        <button class="cbt-sec-tab" id="secTab_3" onclick="switchSection('English Comprehension')">4. English (25)</button>
+      </div>
+
+      <!-- Workspace: Question Pane + Palette -->
+      <div class="cbt-workspace">
+        <div class="cbt-q-pane">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:8px;">
+            <span style="font-weight:800; font-size:14px;" id="qNumberText">Question No. 1</span>
+            <span style="font-size:11px; color:#64748b;" id="qSectionText">General Intelligence & Reasoning</span>
+          </div>
+
+          <div class="q-stem-text" id="qStemContainer">Loading exam questions...</div>
+
+          <div class="cbt-options-list" id="optionsContainer"></div>
+
+          <!-- Explanation Box (Revealed only in Review Mode) -->
+          <div id="reviewSolutionBox" style="display:none; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:14px; margin-top:16px;">
+            <div style="font-weight:800; color:#0369a1; font-size:13px; margin-bottom:6px;">💡 Detailed 3-Part Beginner Explanation:</div>
+            <div id="solutionText" style="font-size:13px; line-height:1.6; color:#334155; white-space:pre-line;"></div>
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button class="card-btn" style="background:#fee2e2; color:#b91c1c; font-size:11px; padding:5px 10px;" onclick="logErrorToDiary('CONCEPT')">📕 Log as Conceptual Gap</button>
+              <button class="card-btn" style="background:#fef3c7; color:#b45309; font-size:11px; padding:5px 10px;" onclick="logErrorToDiary('SILLY')">⚠️ Log as Silly Slip</button>
+              <button class="card-btn" style="background:#e0f2fe; color:#0369a1; font-size:11px; padding:5px 10px;" onclick="logErrorToDiary('TIME')">⏱️ Log as Time Trap</button>
+            </div>
+          </div>
+
+          <!-- Bottom Footer Buttons -->
+          <div style="margin-top:auto; padding-top:20px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; gap:6px;">
+              <button class="card-btn btn-secondary" onclick="clearSelection()">Clear Response</button>
+              <button class="card-btn" style="background:#7c3aed; color:white;" onclick="markForReviewNext()">Mark for Review & Next</button>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="card-btn btn-secondary" onclick="prevQ()">Previous</button>
+              <button class="card-btn btn-success" onclick="saveAndNext()">Save & Next</button>
+              <button class="card-btn btn-primary" onclick="submitExamPrompt()">Submit Mock</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Palette Sidebar -->
+        <div class="cbt-palette-pane">
+          <div style="background:white; padding:10px; border-radius:6px; border:1px solid var(--border); font-size:11px;">
+            <strong>Legend:</strong>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:6px;">
+              <div><span style="background:var(--success); color:white; padding:1px 5px; border-radius:2px;">■</span> Answered</div>
+              <div><span style="background:var(--danger); color:white; padding:1px 5px; border-radius:2px;">■</span> Not Answered</div>
+              <div><span style="background:#7c3aed; color:white; padding:1px 5px; border-radius:2px;">■</span> Review</div>
+              <div><span style="background:#e2e8f0; color:#334155; padding:1px 5px; border-radius:2px;">■</span> Not Visited</div>
+            </div>
+          </div>
+          <div class="palette-grid" id="paletteGrid"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = {};
+    let questionStates = {}; // 'answered', 'not-answered', 'review'
+    let currentLang = 'en';
+    let isReviewMode = false;
+    let timerSeconds = 3600;
+    let timerInterval = null;
+
+    async function initCBT() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mockId = urlParams.get('mock') || 'mock_1';
+      document.getElementById('mockSelectDropdown').value = mockId;
+
+      try {
+        const res = await fetch('cgl_app_database.json');
+        const db = await res.json();
+        
+        const mock = (db.daily_mocks || []).find(m => m.mock_id === mockId) || (db.daily_mocks || [])[0];
+        if (mock && mock.questions) {
+          currentQuestions = mock.questions;
+          document.getElementById('examHeaderTitle').textContent = mock.title || 'SSC CGL Tier-I Mock';
+        }
+      } catch (e) {
+        console.warn("Using fallback local dataset", e);
+      }
+
+      if (currentQuestions.length === 0) {
+        // Fallback default set
+        currentQuestions = [
+          {
+            id: 1,
+            section: "General Intelligence & Reasoning",
+            stem: "Select the related word pair: Odometer : Mileage :: Barometer : ?",
+            stem_hi: "संबंधित शब्द युग्म का चयन कीजिए: ओडोमीटर : दूरी (माइलेज) :: बैरोमीटर : ?",
+            options: { A: "Atmospheric Pressure", B: "Humidity", C: "Temperature", D: "Wind Speed" },
+            correct: "A",
+            solution: "• Concept: Barometer measures atmospheric pressure."
+          },
+          {
+            id: 2,
+            section: "Quantitative Aptitude",
+            stem: "If x + 1/x = 4, find the value of x³ + 1/x³.",
+            stem_hi: "यदि x + 1/x = 4 है, तो x³ + 1/x³ का मान ज्ञात कीजिए।",
+            options: { A: "52", B: "64", C: "76", D: "48" },
+            correct: "A",
+            solution: "• Formula: k³ - 3k = 4³ - 3(4) = 64 - 12 = 52."
+          }
+        ];
+      }
+
+      buildPalette();
+      renderQuestion();
+      startTimer();
+    }
+
+    function buildPalette() {
+      const pGrid = document.getElementById('paletteGrid');
+      pGrid.innerHTML = '';
+      currentQuestions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'pal-btn';
+        btn.id = 'pal_btn_' + idx;
+        btn.textContent = idx + 1;
+        btn.onclick = () => goToQuestion(idx);
+        pGrid.appendChild(btn);
+      });
+      updatePaletteUI();
+    }
+
+    function updatePaletteUI() {
+      currentQuestions.forEach((q, idx) => {
+        const btn = document.getElementById('pal_btn_' + idx);
+        if (!btn) return;
+        btn.className = 'pal-btn';
+        if (idx === currentIndex) btn.classList.add('current');
+        if (questionStates[q.id]) {
+          btn.classList.add(questionStates[q.id]);
+        }
+      });
+    }
+
+    function renderQuestion() {
+      const q = currentQuestions[currentIndex];
+      if (!q) return;
+
+      document.getElementById('qNumberText').textContent = `Question No. ${currentIndex + 1} of ${currentQuestions.length}`;
+      document.getElementById('qSectionText').textContent = q.section;
+      document.getElementById('qStemContainer').textContent = (currentLang === 'hi' && q.stem_hi) ? q.stem_hi : q.stem;
+
+      const optContainer = document.getElementById('optionsContainer');
+      optContainer.innerHTML = '';
+
+      const opts = q.options || {};
+      for (const [key, val] of Object.entries(opts)) {
+        const optDiv = document.createElement('div');
+        optDiv.className = 'cbt-option-item';
+        if (userAnswers[q.id] === key) optDiv.classList.add('selected');
+        if (isReviewMode) {
+          if (key === q.correct) optDiv.style.background = '#dcfce7';
+          if (userAnswers[q.id] === key && key !== q.correct) optDiv.style.background = '#fee2e2';
+        }
+        optDiv.onclick = () => selectOption(key);
+
+        optDiv.innerHTML = `
+          <div class="opt-letter-tag">${key}</div>
+          <div style="font-size:14px; flex:1;">${val}</div>
+        `;
+        optContainer.appendChild(optDiv);
+      }
+
+      const solBox = document.getElementById('reviewSolutionBox');
+      if (isReviewMode) {
+        solBox.style.display = 'block';
+        document.getElementById('solutionText').textContent = q.solution || 'Correct Option: ' + q.correct;
+      } else {
+        solBox.style.display = 'none';
+      }
+
+      updatePaletteUI();
+    }
+
+    function selectOption(key) {
+      if (isReviewMode) return;
+      const q = currentQuestions[currentIndex];
+      userAnswers[q.id] = key;
+      renderQuestion();
+    }
+
+    function saveAndNext() {
+      const q = currentQuestions[currentIndex];
+      if (userAnswers[q.id]) {
+        questionStates[q.id] = 'answered';
+      } else {
+        questionStates[q.id] = 'not-answered';
+      }
+      nextQ();
+    }
+
+    function markForReviewNext() {
+      const q = currentQuestions[currentIndex];
+      questionStates[q.id] = 'review';
+      nextQ();
+    }
+
+    function clearSelection() {
+      const q = currentQuestions[currentIndex];
+      delete userAnswers[q.id];
+      delete questionStates[q.id];
+      renderQuestion();
+    }
+
+    function nextQ() {
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      }
+    }
+
+    function prevQ() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function goToQuestion(idx) {
+      currentIndex = idx;
+      renderQuestion();
+    }
+
+    function toggleLang() {
+      currentLang = (currentLang === 'en') ? 'hi' : 'en';
+      document.getElementById('langBtnText').textContent = (currentLang === 'en') ? 'English' : 'हिंदी';
+      renderQuestion();
+    }
+
+    function switchSection(secName) {
+      const idx = currentQuestions.findIndex(q => q.section === secName);
+      if (idx !== -1) {
+        goToQuestion(idx);
+      }
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          alert("Time's up! Submitting exam.");
+          submitExamPrompt();
+          return;
+        }
+        timerSeconds--;
+        const m = Math.floor(timerSeconds / 60);
+        const s = timerSeconds % 60;
+        document.getElementById('timerDisplay').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function submitExamPrompt() {
+      clearInterval(timerInterval);
+      isReviewMode = true;
+      let cor = 0, wr = 0;
+      currentQuestions.forEach(q => {
+        if (userAnswers[q.id] === q.correct) cor++;
+        else if (userAnswers[q.id]) wr++;
+      });
+      const score = (cor * 2) - (wr * 0.5);
+      alert(`Mock Exam Submitted!
+
+Score: ${score} / ${currentQuestions.length * 2}
+Correct: ${cor}
+Incorrect: ${wr}
+
+Entering Review Mode.`);
+      renderQuestion();
+    }
+
+    function logErrorToDiary(bucket) {
+      const q = currentQuestions[currentIndex];
+      const notebook = JSON.parse(localStorage.getItem('cgl_error_notebook') || '[]');
+      if (!notebook.find(n => n.id === q.id)) {
+        notebook.push({
+          id: q.id,
+          section: q.section,
+          stem: q.stem,
+          correct: q.correct,
+          userChoice: userAnswers[q.id] || 'Unattempted',
+          solution: q.solution,
+          bucket: bucket,
+          date: new Date().toISOString().split('T')[0]
+        });
+        localStorage.setItem('cgl_error_notebook', JSON.stringify(notebook));
+        alert(`Question logged in 3-Bucket Error Diary under [${bucket}]!`);
+      } else {
+        alert("This question is already in your Error Diary!");
+      }
+    }
+
+    function switchMock(mId) {
+      window.location.search = '?mock=' + mId;
+    }
+
+    window.addEventListener('DOMContentLoaded', initCBT);
+  </script>
+</body>
+</html>
